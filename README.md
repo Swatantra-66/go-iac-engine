@@ -69,7 +69,7 @@ Contributions, issues, and feature requests are welcome. If you want to expand t
 1. **Fork** the project on GitHub.
 2. **Clone** your fork locally:
 
-````bash
+```bash
 git clone [https://github.com/Swatantra-66/go-iac-engine.git](https://github.com/Swatantra-66/go-iac-engine.git)
 ```
 
@@ -77,7 +77,7 @@ git clone [https://github.com/Swatantra-66/go-iac-engine.git](https://github.com
 
 ```bash
 git checkout -b master_branch
-````
+```
 
 4. Commit your changes with clear messages:
 
