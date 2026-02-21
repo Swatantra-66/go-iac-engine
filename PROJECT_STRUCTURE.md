@@ -2,7 +2,7 @@
 
 This repository follows standard Go project layout conventions to separate the API routing, business logic, and configuration.
 
-`text
+```
 go-iac-engine/
 ├── cmd/
 │   └── iac/
@@ -23,7 +23,7 @@ go-iac-engine/
 ├── go.mod & go.sum          # Go module dependencies
 ├── README.md                # Comprehensive project documentation
 └── LICENSE                  # MIT License
-`
+```
 
 ### Directory Deep Dive
 
