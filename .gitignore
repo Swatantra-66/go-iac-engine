@@ -1,0 +1,11 @@
+# secret
+.env
+
+iac-tool
+*.exe
+
+main
+iac-engine
+state.json
+
+.DS_Store
