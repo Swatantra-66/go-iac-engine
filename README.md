@@ -62,6 +62,17 @@ curl -X DELETE http://localhost:8080/destroy \
  -H "Content-Type: application/json"
 ```
 
+## Execution
+
+**1. Engine Execution Logs:**
+![Terminal Output showing Gin API and AWS SDK logs](assets/terminal-output.png)
+
+**1. EC2 Instance Provisioned:**
+![EC2 Console showing the running instance](assets/ec2-console.png)
+
+**2. S3 Bucket Created:**
+![S3 Console showing the new bucket](assets/s3-console.png)
+
 ## Contributing and Forking
 
 Contributions, issues, and feature requests are welcome. If you want to expand this IaC engine, feel free to fork the repository and submit a pull request.
