@@ -20,13 +20,13 @@ cd go-iac-engine
 
 Create a .env file in the root directory and add your credentials:
 
-`text
+```
 IAC_API_KEY=your-custom-secret-key
 AWS_ACCESS_KEY_ID=your_aws_access_key
 AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 AWS_REGION=us-east-1
 OUTPUT_FORMAT=json
-`
+```
 
 ## 4. Build & Run
 
