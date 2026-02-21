@@ -1,6 +1,8 @@
 # IaC-Engine-Tool
 
-A secure Infrastructure as Code (IaC) engine built with Go and the Gin framework. This tool manages the lifecycle of AWS resources using a declarative approach and remote state management.
+A secure Infrastructure as Code (IaC) engine built with Go(Gin). This tool allows users to provision, destroy, update, and manage AWS resources programmatically via a REST API with automated remote state management.
+
+![Go-IaC-Engine Architecture](assets/iac-engine-flow.png)
 
 ## Documentation
 
