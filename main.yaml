@@ -2,6 +2,29 @@ resources:
   - type: aws_s3_bucket
     name: my-iac-tool-bucket-2026
     region: us-east-1
+    encryption: AES256
+    block_public_access: true
+    bucket_policy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "RequireEncryptedTransport",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+              "arn:aws:s3:::my-iac-tool-bucket-2026",
+              "arn:aws:s3:::my-iac-tool-bucket-2026/*"
+            ],
+            "Condition": {
+              "Bool": {
+                "aws:SecureTransport": "false"
+              }
+            }
+          }
+        ]
+      }
     
   - type: aws_ec2_instance
     name: my-first-web-server
