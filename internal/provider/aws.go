@@ -10,8 +10,11 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	ec2Types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	s3Types "github.com/aws/aws-sdk-go-v2/service/s3/types"
 
 	"github.com/Swatantra-66/go-iac-tool/internal/parser"
+	"github.com/aws/aws-sdk-go-v2/service/kms"
+	kmsTypes "github.com/aws/aws-sdk-go-v2/service/kms/types"
 )
 
 func DeployResource(res parser.Resource) (string, error) {
@@ -22,7 +25,7 @@ func DeployResource(res parser.Resource) (string, error) {
 
 	switch res.Type {
 	case "aws_s3_bucket":
-		return createS3Bucket(cfg, res.Name)
+		return createS3Bucket(cfg, res)
 	case "aws_ec2_instance":
 		return createEC2Instance(cfg, res.Name, res.AMI, res.InstanceType)
 	default:
@@ -30,20 +33,76 @@ func DeployResource(res parser.Resource) (string, error) {
 	}
 }
 
-func createS3Bucket(cfg aws.Config, bucketName string) (string, error) {
+func createS3Bucket(cfg aws.Config, res parser.Resource) (string, error) {
 	client := s3.NewFromConfig(cfg)
+	bucketName := res.Name
 
 	fmt.Printf("Provisioning S3 bucket '%s'...\n", bucketName)
 
+	// 1. Create the base bucket
 	_, err := client.CreateBucket(context.TODO(), &s3.CreateBucketInput{
 		Bucket: aws.String(bucketName),
 	})
-
 	if err != nil {
 		return "", fmt.Errorf("failed to create bucket: %w", err)
 	}
+	fmt.Printf("Successfully created base S3 bucket: %s\n", bucketName)
 
-	fmt.Printf("successfully created S3 bucket: %s\n", bucketName)
+	// 2. Apply Security Configurations if specified
+	if res.Encryption != "" {
+		fmt.Println("Applying KMS Encryption...")
+		keyId, err := CreateKMSKey(context.TODO(), cfg, bucketName)
+		if err != nil {
+			return bucketName, fmt.Errorf("bucket created, but KMS key failed: %w", err)
+		}
+
+		_, err = client.PutBucketEncryption(context.TODO(), &s3.PutBucketEncryptionInput{
+			Bucket: aws.String(bucketName),
+			ServerSideEncryptionConfiguration: &s3Types.ServerSideEncryptionConfiguration{
+				Rules: []s3Types.ServerSideEncryptionRule{
+					{
+						ApplyServerSideEncryptionByDefault: &s3Types.ServerSideEncryptionByDefault{
+							SSEAlgorithm:   s3Types.ServerSideEncryptionAwsKms,
+							KMSMasterKeyID: aws.String(keyId),
+						},
+						BucketKeyEnabled: aws.Bool(true),
+					},
+				},
+			},
+		})
+		if err != nil {
+			return bucketName, fmt.Errorf("failed to apply encryption: %w", err)
+		}
+	}
+
+	if res.BlockPublicAccess {
+		fmt.Println("Enabling Block Public Access...")
+		_, err = client.PutPublicAccessBlock(context.TODO(), &s3.PutPublicAccessBlockInput{
+			Bucket: aws.String(bucketName),
+			PublicAccessBlockConfiguration: &s3Types.PublicAccessBlockConfiguration{
+				BlockPublicAcls:       aws.Bool(true),
+				IgnorePublicAcls:      aws.Bool(true),
+				BlockPublicPolicy:     aws.Bool(true),
+				RestrictPublicBuckets: aws.Bool(true),
+			},
+		})
+		if err != nil {
+			return bucketName, fmt.Errorf("failed to block public access: %w", err)
+		}
+	}
+
+	if res.BucketPolicy != "" {
+		fmt.Println("Attaching IAM Bucket Policy...")
+		_, err = client.PutBucketPolicy(context.TODO(), &s3.PutBucketPolicyInput{
+			Bucket: aws.String(bucketName),
+			Policy: aws.String(res.BucketPolicy),
+		})
+		if err != nil {
+			return bucketName, fmt.Errorf("failed to attach bucket policy: %w", err)
+		}
+	}
+
+	fmt.Printf("Successfully secured S3 bucket: %s\n", bucketName)
 	return bucketName, nil
 }
 
@@ -154,4 +213,26 @@ func UpdateEC2Instance(res parser.Resource, instanceID string) error {
 	})
 
 	return err
+}
+
+func CreateKMSKey(ctx context.Context, cfg aws.Config, bucketName string) (string, error) {
+	client := kms.NewFromConfig(cfg)
+
+	desc := fmt.Sprintf("Encryption key for IaC bucket: %s", bucketName)
+
+	input := &kms.CreateKeyInput{
+		Description: aws.String(desc),
+		KeyUsage:    kmsTypes.KeyUsageTypeEncryptDecrypt,
+		Origin:      kmsTypes.OriginTypeAwsKms,
+	}
+
+	output, err := client.CreateKey(ctx, input)
+	if err != nil {
+		return "", fmt.Errorf("failed to create KMS key: %w", err)
+	}
+
+	keyId := *output.KeyMetadata.KeyId
+	fmt.Printf("Successfully generated KMS Key: %s\n", keyId)
+
+	return keyId, nil
 }
