@@ -89,7 +89,7 @@ curl -X DELETE http://localhost:8080/destroy \
  -H "X-API-Key: your-secret-password" \
  -H "Content-Type: application/json"
 
-````
+---
 
 ## Execution
 
@@ -97,25 +97,28 @@ curl -X DELETE http://localhost:8080/destroy \
 ![Terminal Output showing Gin API and AWS SDK logs](assets/terminal-output.png)
 
 ## Case Study Fulfillment: Secure Storage Management
+
 This engine was specifically engineered to fulfill advanced cloud security requirements. Instead of manual console configuration, it programmatically guarantees secure storage by:
 
-* Generating **AWS KMS** Customer Managed Keys (CMKs).
-![KMS Terminal Output](assets/kms-terminal-output.png)
-![KMS Encryption Settings](assets/kms-encryption.png)
-![KMS Configuration](assets/kms-config.png)
+- Generating **AWS KMS** Customer Managed Keys (CMKs).
+  ![KMS Terminal Output](assets/kms-terminal-output.png)
+  ![KMS Encryption Settings](assets/kms-encryption.png)
+  ![KMS Configuration](assets/kms-config.png)
 
-* Enforcing strict **S3 Block Public Access** configurations.
-![Block Public Access Console](assets/block-address.png)
-![S3 Bucket Policy](assets/bucket-policy.png)
+- Enforcing strict **S3 Block Public Access** configurations.
+  ![Block Public Access Console](assets/block-address.png)
+  ![S3 Bucket Policy](assets/bucket-policy.png)
 
-* Attaching **IAM Bucket Policies** that deny unencrypted traffic.
-![IAM Policy Settings](assets/iam-policy.png)
+- Attaching **IAM Bucket Policies** that deny unencrypted traffic.
+  ![IAM Policy Settings](assets/iam-policy.png)
 
 **1. EC2 Instance Provisioned:**
 ![EC2 Console showing the running instance](assets/ec2-console.png)
 
 **2. S3 Bucket Created:**
 ![S3 Console showing the new bucket](assets/s3-console.png)
+
+---
 
 ## Contributing and Forking
 
@@ -128,7 +131,7 @@ Contributions, issues, and feature requests are welcome. If you want to expand t
 
 ```bash
 git clone [https://github.com/Swatantra-66/go-iac-engine.git](https://github.com/Swatantra-66/go-iac-engine.git)
-````
+```
 
 3. Create a new branch for your feature or bugfix:
 
