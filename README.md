@@ -98,17 +98,18 @@ curl -X DELETE http://localhost:8080/destroy \
 
 ## Case Study Fulfillment: Secure Storage Management
 This engine was specifically engineered to fulfill advanced cloud security requirements. Instead of manual console configuration, it programmatically guarantees secure storage by:
+
 * Generating **AWS KMS** Customer Managed Keys (CMKs).
-![](assets/kms-terminal-output.png)
-![](assets/kms-encryption.png)
-![](assets/kms-config.png)
+![KMS Terminal Output](assets/kms-terminal-output.png)
+![KMS Encryption Settings](assets/kms-encryption.png)
+![KMS Configuration](assets/kms-config.png)
 
 * Enforcing strict **S3 Block Public Access** configurations.
-![](assets/block-address.png)
-![](assets/bucket-policy.png)
+![Block Public Access Console](assets/block-address.png)
+![S3 Bucket Policy](assets/bucket-policy.png)
 
 * Attaching **IAM Bucket Policies** that deny unencrypted traffic.
-![](assets/iam-policy.png)
+![IAM Policy Settings](assets/iam-policy.png)
 
 **1. EC2 Instance Provisioned:**
 ![EC2 Console showing the running instance](assets/ec2-console.png)
