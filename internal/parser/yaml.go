@@ -8,11 +8,14 @@ import (
 )
 
 type Resource struct {
-	Type         string `yaml:"type"`
-	Name         string `yaml:"name"`
-	Region       string `yaml:"region"`
-	AMI          string `yaml:"ami,omitempty"`
-	InstanceType string `yaml:"instance_type,omitempty"`
+	Type              string `yaml:"type"`
+	Name              string `yaml:"name"`
+	Region            string `yaml:"region"`
+	Encryption        string `yaml:"encryption,omitempty"`
+	BlockPublicAccess bool   `yaml:"block_public_access,omitempty"`
+	BucketPolicy      string `yaml:"bucket_policy,omitempty"`
+	AMI               string `yaml:"ami,omitempty"`
+	InstanceType      string `yaml:"instance_type,omitempty"`
 }
 
 type Config struct {
